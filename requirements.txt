@@ -1,0 +1,6 @@
+Django==1.9
+django-extensions==1.7.4
+djangorestframework==3.5.3
+Pygments==2.1.3
+six==1.10.0
+yolk==0.4.3
