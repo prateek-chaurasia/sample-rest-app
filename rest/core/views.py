@@ -44,6 +44,26 @@ class UserDetail(generics.RetrieveAPIView):
 	queryset = User.objects.all()
 	serializer_class = UserSerializer
 
+class UpdateUserName(generics.UpdateAPIView):
+	"""
+		This class handles the update functionality
+		for updating the username of a user.
+		command to run from command prompt: 
+	curl -X PUT -H "Content-Type: application/json" -d '{"username": "Vikas"}' http://127.0.0.1:8080/user/update/3
+	"""
+	queryset = User.objects.all()
+	serializer_class = UserSerializer
+	
+	def update(self, request, *args, **kwargs):
+		instance = self.get_object()
+		instance.username = request.data.get('username')
+		instance.save()
+
+		serializer = self.get_serializer(instance, data=request.data, partial=True)
+		serializer.is_valid(raise_exception=True)
+		self.perform_update(serializer)
+		return Response(serializer.data)
+	
 class SnippetList(generics.ListCreateAPIView):
 	permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 	queryset = Snippet.objects.all()
@@ -51,7 +71,6 @@ class SnippetList(generics.ListCreateAPIView):
 	
 	def perform_create(self, serializer):
 	    serializer.save(owner=self.request.user)	
-
 
 class SnippetDetail(generics.RetrieveUpdateDestroyAPIView):
 	permission_classes = (permissions.IsAuthenticatedOrReadOnly,
@@ -66,6 +85,8 @@ class SnippetHighlight(generics.GenericAPIView):
 	def get(self, request, *args, **kwargs):
 		snippet = self.get_object()
 		return Response(snippet.highlighted)
+
+
 
 class SnippetFreshnessView(APIView):
 	"""
