@@ -19,6 +19,7 @@ from django.contrib import admin
 from rest_framework import routers
 from rest.core import views
 from rest.core import urls as URLS
+from rest_framework.authtoken import views as rest_framework_views
 
 router = routers.DefaultRouter()
 router.register(r'users', views.UserViewSet)
@@ -28,5 +29,9 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
 #	url(r'^', include(router.urls)),
 	url(r'^', include(URLS)),
+#	url(r'^login/$', views.get_auth_token, name='login'),
+#    url(r'^logout/$', views.logout_user, name='logout'),
+#    url(r'^auth/$', views.login_form, name='login_form'),
+	url(r'^get_auth_token$', rest_framework_views.obtain_auth_token, name='get_auth_token'),
 	url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 ]

@@ -10,8 +10,25 @@ from rest_framework.views import APIView
 from rest_framework.renderers import JSONRenderer
 from rest.core.permissions import IsOwnerOrReadOnly
 from datetime import datetime
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login, logout
+from rest_framework.authtoken.models import Token
+from rest import settings
+from rest_framework.authentication import TokenAuthentication
 
 # Create your views here.
+
+def get_auth_token(request):
+    username = request.POST.get('username')
+    password = request.POST.get('password')
+    user = authenticate(username=username, password=password)
+    if user is not None:
+        # the password verified for the user
+        if user.is_active:
+            token, created = Token.objects.get_or_create(user=user)
+            request.session['auth'] = token.key
+            return redirect('/polls/', request)
+    return redirect(settings.LOGIN_URL, request)
 
 @api_view(['GET'])
 def api_root(request, format=None):
@@ -36,7 +53,8 @@ class GroupViewSet(viewsets.ModelViewSet):
 	serializer_class = GroupSerializer
 
 class UserList(generics.ListAPIView):
-#	permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+	authentication_classes = (TokenAuthentication,)
+	permission_classes = (permissions.IsAuthenticated,)
 	queryset = User.objects.all()
 	serializer_class = UserSerializer
 
@@ -85,7 +103,6 @@ class SnippetHighlight(generics.GenericAPIView):
 	def get(self, request, *args, **kwargs):
 		snippet = self.get_object()
 		return Response(snippet.highlighted)
-
 
 
 class SnippetFreshnessView(APIView):
