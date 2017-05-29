@@ -1,0 +1,248 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>rest.core.views &#8212; Sample Rest 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for rest.core.views</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">django.shortcuts</span> <span class="k">import</span> <span class="n">render</span>
+<span class="kn">from</span> <span class="nn">django.contrib.auth.models</span> <span class="k">import</span> <span class="n">User</span><span class="p">,</span> <span class="n">Group</span>
+<span class="kn">from</span> <span class="nn">rest.core.serializers</span> <span class="k">import</span> <span class="n">UserSerializer</span><span class="p">,</span> <span class="n">GroupSerializer</span><span class="p">,</span> <span class="n">SnippetSerializer</span>
+<span class="kn">from</span> <span class="nn">rest_framework</span> <span class="k">import</span> <span class="n">viewsets</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="n">mixins</span><span class="p">,</span> <span class="n">generics</span><span class="p">,</span> <span class="n">permissions</span><span class="p">,</span> <span class="n">renderers</span>
+<span class="kn">from</span> <span class="nn">rest_framework.decorators</span> <span class="k">import</span> <span class="n">api_view</span>
+<span class="kn">from</span> <span class="nn">rest_framework.reverse</span> <span class="k">import</span> <span class="n">reverse</span>
+<span class="kn">from</span> <span class="nn">rest_framework.response</span> <span class="k">import</span> <span class="n">Response</span>
+<span class="kn">from</span> <span class="nn">rest.core.models</span> <span class="k">import</span> <span class="n">Snippet</span>
+<span class="kn">from</span> <span class="nn">rest_framework.views</span> <span class="k">import</span> <span class="n">APIView</span>
+<span class="kn">from</span> <span class="nn">rest_framework.renderers</span> <span class="k">import</span> <span class="n">JSONRenderer</span>
+<span class="kn">from</span> <span class="nn">rest.core.permissions</span> <span class="k">import</span> <span class="n">IsOwnerOrReadOnly</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">django.shortcuts</span> <span class="k">import</span> <span class="n">render</span><span class="p">,</span> <span class="n">redirect</span>
+<span class="kn">from</span> <span class="nn">django.contrib.auth</span> <span class="k">import</span> <span class="n">authenticate</span><span class="p">,</span> <span class="n">login</span><span class="p">,</span> <span class="n">logout</span>
+<span class="kn">from</span> <span class="nn">rest_framework.authtoken.models</span> <span class="k">import</span> <span class="n">Token</span>
+<span class="kn">from</span> <span class="nn">rest</span> <span class="k">import</span> <span class="n">settings</span>
+<span class="kn">from</span> <span class="nn">rest_framework.authentication</span> <span class="k">import</span> <span class="n">TokenAuthentication</span>
+
+<span class="c1"># Create your views here.</span>
+
+<div class="viewcode-block" id="get_auth_token"><a class="viewcode-back" href="../../../modules/views.html#rest.core.views.get_auth_token">[docs]</a><span class="k">def</span> <span class="nf">get_auth_token</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Returns the token assigned to a particular </span>
+<span class="sd">		user instance, by passing the username and </span>
+<span class="sd">		password as part of the headers.</span>
+<span class="sd">		Sample to test.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="n">username</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;username&#39;</span><span class="p">)</span>
+	<span class="n">password</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;password&#39;</span><span class="p">)</span>
+	<span class="n">user</span> <span class="o">=</span> <span class="n">authenticate</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="n">password</span><span class="p">)</span>
+	<span class="k">if</span> <span class="n">user</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+		<span class="c1"># the password verified for the user</span>
+		<span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">is_active</span><span class="p">:</span>
+			<span class="n">token</span><span class="p">,</span> <span class="n">created</span> <span class="o">=</span> <span class="n">Token</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get_or_create</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">user</span><span class="p">)</span>
+			<span class="n">request</span><span class="o">.</span><span class="n">session</span><span class="p">[</span><span class="s1">&#39;auth&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">token</span><span class="o">.</span><span class="n">key</span>
+			<span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s1">&#39;/polls/&#39;</span><span class="p">,</span> <span class="n">request</span><span class="p">)</span>
+	<span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">LOGIN_URL</span><span class="p">,</span> <span class="n">request</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="api_root"><a class="viewcode-back" href="../../../modules/views.html#rest.core.views.api_root">[docs]</a><span class="nd">@api_view</span><span class="p">([</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">api_root</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		API Endpoint with hyperlinks to user-list</span>
+<span class="sd">		and snippet list. </span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="k">return</span> <span class="n">Response</span><span class="p">({</span>
+			<span class="s1">&#39;users&#39;</span><span class="p">:</span> <span class="n">reverse</span><span class="p">(</span><span class="s1">&#39;user-list&#39;</span><span class="p">,</span> <span class="n">request</span><span class="o">=</span><span class="n">request</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">),</span>
+			<span class="s1">&#39;snippets&#39;</span><span class="p">:</span> <span class="n">reverse</span><span class="p">(</span><span class="s1">&#39;snippet-list&#39;</span><span class="p">,</span> <span class="n">request</span><span class="o">=</span><span class="n">request</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">)</span>
+			<span class="p">})</span></div>
+	
+
+<div class="viewcode-block" id="UserViewSet"><a class="viewcode-back" href="../../../modules/views.html#rest.core.views.UserViewSet">[docs]</a><span class="k">class</span> <span class="nc">UserViewSet</span><span class="p">(</span><span class="n">viewsets</span><span class="o">.</span><span class="n">ModelViewSet</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	API Endpoint that allows users to be viewed or edited.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="n">queryset</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s1">&#39;-date_joined&#39;</span><span class="p">)</span>
+	<span class="n">serializer_class</span> <span class="o">=</span> <span class="n">UserSerializer</span></div>
+
+<div class="viewcode-block" id="GroupViewSet"><a class="viewcode-back" href="../../../modules/views.html#rest.core.views.GroupViewSet">[docs]</a><span class="k">class</span> <span class="nc">GroupViewSet</span><span class="p">(</span><span class="n">viewsets</span><span class="o">.</span><span class="n">ModelViewSet</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	API Endpoint that allows group to be viewed or edited.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="n">queryset</span> <span class="o">=</span> <span class="n">Group</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+	<span class="n">serializer_class</span> <span class="o">=</span> <span class="n">GroupSerializer</span></div>
+
+<div class="viewcode-block" id="UserList"><a class="viewcode-back" href="../../../modules/views.html#rest.core.views.UserList">[docs]</a><span class="k">class</span> <span class="nc">UserList</span><span class="p">(</span><span class="n">generics</span><span class="o">.</span><span class="n">ListAPIView</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	API Endpoint that allows users to be viewed.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="n">authentication_classes</span> <span class="o">=</span> <span class="p">(</span><span class="n">TokenAuthentication</span><span class="p">,)</span>
+	<span class="n">permission_classes</span> <span class="o">=</span> <span class="p">(</span><span class="n">permissions</span><span class="o">.</span><span class="n">IsAuthenticated</span><span class="p">,)</span>
+	<span class="n">queryset</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+	<span class="n">serializer_class</span> <span class="o">=</span> <span class="n">UserSerializer</span></div>
+
+<div class="viewcode-block" id="UserDetail"><a class="viewcode-back" href="../../../modules/views.html#rest.core.views.UserDetail">[docs]</a><span class="k">class</span> <span class="nc">UserDetail</span><span class="p">(</span><span class="n">generics</span><span class="o">.</span><span class="n">RetrieveAPIView</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	API Endpoint that allows user detials to be viewed.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="n">queryset</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+	<span class="n">serializer_class</span> <span class="o">=</span> <span class="n">UserSerializer</span></div>
+
+<div class="viewcode-block" id="UpdateUserName"><a class="viewcode-back" href="../../../modules/views.html#rest.core.views.UpdateUserName">[docs]</a><span class="k">class</span> <span class="nc">UpdateUserName</span><span class="p">(</span><span class="n">generics</span><span class="o">.</span><span class="n">UpdateAPIView</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		This class handles the update functionality</span>
+<span class="sd">		for updating the username of a user.</span>
+<span class="sd">		We pass the new username as part of header.</span>
+<span class="sd">		command to run from command prompt: </span>
+<span class="sd">	curl -X PUT -H &quot;Content-Type: application/json&quot; -d &#39;{&quot;username&quot;: &quot;Vikas&quot;}&#39; http://127.0.0.1:8080/user/update/3</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="n">queryset</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+	<span class="n">serializer_class</span> <span class="o">=</span> <span class="n">UserSerializer</span>
+	
+	<span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+		<span class="n">instance</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_object</span><span class="p">()</span>
+		<span class="n">instance</span><span class="o">.</span><span class="n">username</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;username&#39;</span><span class="p">)</span>
+		<span class="n">instance</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+		<span class="n">serializer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_serializer</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">partial</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+		<span class="n">serializer</span><span class="o">.</span><span class="n">is_valid</span><span class="p">(</span><span class="n">raise_exception</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">perform_update</span><span class="p">(</span><span class="n">serializer</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">serializer</span><span class="o">.</span><span class="n">data</span><span class="p">)</span></div>
+	
+<div class="viewcode-block" id="SnippetList"><a class="viewcode-back" href="../../../modules/views.html#rest.core.views.SnippetList">[docs]</a><span class="k">class</span> <span class="nc">SnippetList</span><span class="p">(</span><span class="n">generics</span><span class="o">.</span><span class="n">ListCreateAPIView</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	API Endpoint that allows Snippet to be viewed.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="n">permission_classes</span> <span class="o">=</span> <span class="p">(</span><span class="n">permissions</span><span class="o">.</span><span class="n">IsAuthenticatedOrReadOnly</span><span class="p">,)</span>
+	<span class="n">queryset</span> <span class="o">=</span> <span class="n">Snippet</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+	<span class="n">serializer_class</span> <span class="o">=</span> <span class="n">SnippetSerializer</span>
+	
+	<span class="k">def</span> <span class="nf">perform_create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">serializer</span><span class="p">):</span>
+	    <span class="n">serializer</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">owner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>	</div>
+
+<div class="viewcode-block" id="SnippetDetail"><a class="viewcode-back" href="../../../modules/views.html#rest.core.views.SnippetDetail">[docs]</a><span class="k">class</span> <span class="nc">SnippetDetail</span><span class="p">(</span><span class="n">generics</span><span class="o">.</span><span class="n">RetrieveUpdateDestroyAPIView</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	API Endpoint that allows Snippet detail to be viewed.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="n">permission_classes</span> <span class="o">=</span> <span class="p">(</span><span class="n">permissions</span><span class="o">.</span><span class="n">IsAuthenticatedOrReadOnly</span><span class="p">,</span>
+							<span class="n">IsOwnerOrReadOnly</span><span class="p">)</span>
+	<span class="n">queryset</span> <span class="o">=</span> <span class="n">Snippet</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+	<span class="n">serializer_class</span> <span class="o">=</span> <span class="n">SnippetSerializer</span></div>
+
+<span class="k">class</span> <span class="nc">SnippetHighlight</span><span class="p">(</span><span class="n">generics</span><span class="o">.</span><span class="n">GenericAPIView</span><span class="p">):</span>
+	<span class="n">queryset</span> <span class="o">=</span> <span class="n">Snippet</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+	<span class="n">rendered_classes</span> <span class="o">=</span> <span class="p">(</span><span class="n">renderers</span><span class="o">.</span><span class="n">StaticHTMLRenderer</span><span class="p">,)</span>
+
+	<span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+		<span class="n">snippet</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_object</span><span class="p">()</span>
+		<span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">snippet</span><span class="o">.</span><span class="n">highlighted</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="SnippetFreshnessView"><a class="viewcode-back" href="../../../modules/views.html#rest.core.views.SnippetFreshnessView">[docs]</a><span class="k">class</span> <span class="nc">SnippetFreshnessView</span><span class="p">(</span><span class="n">APIView</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	A view that returns status of staleness of data in JSON.</span>
+<span class="sd">	statleness of data would be measured on some logic provided</span>
+<span class="sd">	by the business people.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="n">renderer_classes</span> <span class="o">=</span> <span class="p">(</span><span class="n">JSONRenderer</span><span class="p">,)</span>
+
+	<span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+		<span class="n">last_entry_obj</span> <span class="o">=</span> <span class="n">Snippet</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">latest</span><span class="p">(</span><span class="s1">&#39;created&#39;</span><span class="p">)</span>
+		<span class="n">last_entry_date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="n">last_entry_obj</span><span class="o">.</span><span class="n">created</span><span class="p">,</span> <span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">)</span>
+		<span class="n">current_date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span> <span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">)</span>
+		<span class="n">diff_days</span> <span class="o">=</span> <span class="n">days_between</span><span class="p">(</span><span class="n">last_entry_date</span><span class="p">,</span> <span class="n">current_date</span><span class="p">)</span>
+		<span class="k">if</span> <span class="n">diff_days</span> <span class="o">&gt;=</span> <span class="mi">7</span><span class="p">:</span>
+			<span class="n">status</span> <span class="o">=</span> <span class="s2">&quot;stale&quot;</span>
+		<span class="k">elif</span> <span class="n">diff_days</span> <span class="o">&lt;</span> <span class="mi">7</span><span class="p">:</span>
+			<span class="n">status</span> <span class="o">=</span> <span class="s2">&quot;fresh&quot;</span>
+		<span class="n">content</span> <span class="o">=</span> <span class="p">[{</span><span class="s1">&#39;staleness_count&#39;</span><span class="p">:</span> <span class="n">diff_days</span><span class="p">,</span>
+					<span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="n">status</span><span class="p">}]</span>
+		<span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">content</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="days_between"><a class="viewcode-back" href="../../../modules/views.html#rest.core.views.days_between">[docs]</a><span class="k">def</span> <span class="nf">days_between</span><span class="p">(</span><span class="n">d1</span><span class="p">,</span> <span class="n">d2</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Accepts two dates as arguments and </span>
+<span class="sd">		return the difference of days between</span>
+<span class="sd">		them.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="n">d1</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">d1</span><span class="p">,</span> <span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">)</span>
+	<span class="n">d2</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">d2</span><span class="p">,</span> <span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">)</span>
+	<span class="k">return</span> <span class="nb">abs</span><span class="p">((</span><span class="n">d2</span> <span class="o">-</span> <span class="n">d1</span><span class="p">)</span><span class="o">.</span><span class="n">days</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Prateek.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

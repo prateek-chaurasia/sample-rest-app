@@ -19,19 +19,28 @@ from rest_framework.authentication import TokenAuthentication
 # Create your views here.
 
 def get_auth_token(request):
-    username = request.POST.get('username')
-    password = request.POST.get('password')
-    user = authenticate(username=username, password=password)
-    if user is not None:
-        # the password verified for the user
-        if user.is_active:
-            token, created = Token.objects.get_or_create(user=user)
-            request.session['auth'] = token.key
-            return redirect('/polls/', request)
-    return redirect(settings.LOGIN_URL, request)
+	"""
+		Returns the token assigned to a particular 
+		user instance, by passing the username and 
+		password as part of the headers.
+	"""
+	username = request.POST.get('username')
+	password = request.POST.get('password')
+	user = authenticate(username=username, password=password)
+	if user is not None:
+		# the password verified for the user
+		if user.is_active:
+			token, created = Token.objects.get_or_create(user=user)
+			request.session['auth'] = token.key
+			return redirect('/polls/', request)
+	return redirect(settings.LOGIN_URL, request)
 
 @api_view(['GET'])
 def api_root(request, format=None):
+	"""
+		API Endpoint with hyperlinks to user-list
+		and snippet list. 
+	"""
 	return Response({
 			'users': reverse('user-list', request=request, format=format),
 			'snippets': reverse('snippet-list', request=request, format=format)
@@ -53,12 +62,18 @@ class GroupViewSet(viewsets.ModelViewSet):
 	serializer_class = GroupSerializer
 
 class UserList(generics.ListAPIView):
+	"""
+	API Endpoint that allows users to be viewed.
+	"""
 	authentication_classes = (TokenAuthentication,)
 	permission_classes = (permissions.IsAuthenticated,)
 	queryset = User.objects.all()
 	serializer_class = UserSerializer
 
 class UserDetail(generics.RetrieveAPIView):
+	"""
+	API Endpoint that allows user detials to be viewed.
+	"""
 	queryset = User.objects.all()
 	serializer_class = UserSerializer
 
@@ -66,6 +81,7 @@ class UpdateUserName(generics.UpdateAPIView):
 	"""
 		This class handles the update functionality
 		for updating the username of a user.
+		We pass the new username as part of header.
 		command to run from command prompt: 
 	curl -X PUT -H "Content-Type: application/json" -d '{"username": "Vikas"}' http://127.0.0.1:8080/user/update/3
 	"""
@@ -83,6 +99,9 @@ class UpdateUserName(generics.UpdateAPIView):
 		return Response(serializer.data)
 	
 class SnippetList(generics.ListCreateAPIView):
+	"""
+	API Endpoint that allows Snippet to be viewed.
+	"""
 	permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 	queryset = Snippet.objects.all()
 	serializer_class = SnippetSerializer
@@ -91,6 +110,9 @@ class SnippetList(generics.ListCreateAPIView):
 	    serializer.save(owner=self.request.user)	
 
 class SnippetDetail(generics.RetrieveUpdateDestroyAPIView):
+	"""
+	API Endpoint that allows Snippet detail to be viewed.
+	"""
 	permission_classes = (permissions.IsAuthenticatedOrReadOnly,
 							IsOwnerOrReadOnly)
 	queryset = Snippet.objects.all()
@@ -108,7 +130,8 @@ class SnippetHighlight(generics.GenericAPIView):
 class SnippetFreshnessView(APIView):
 	"""
 	A view that returns status of staleness of data in JSON.
-	statleness of data would be measured on some logic.
+	statleness of data would be measured on some logic provided
+	by the business people.
 	"""
 	renderer_classes = (JSONRenderer,)
 
@@ -127,6 +150,11 @@ class SnippetFreshnessView(APIView):
 
 
 def days_between(d1, d2):
-    d1 = datetime.strptime(d1, "%Y-%m-%d")
-    d2 = datetime.strptime(d2, "%Y-%m-%d")
-    return abs((d2 - d1).days)
+	"""
+		Accepts two dates as arguments and 
+		return the difference of days between
+		them.
+	"""
+	d1 = datetime.strptime(d1, "%Y-%m-%d")
+	d2 = datetime.strptime(d2, "%Y-%m-%d")
+	return abs((d2 - d1).days)

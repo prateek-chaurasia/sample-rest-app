@@ -1,0 +1,218 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Views &#8212; Sample Rest 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-rest.core.views">
+<span id="views"></span><h1>Views<a class="headerlink" href="#module-rest.core.views" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="rest.core.views.GroupViewSet">
+<em class="property">class </em><code class="descclassname">rest.core.views.</code><code class="descname">GroupViewSet</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/rest/core/views.html#GroupViewSet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rest.core.views.GroupViewSet" title="Permalink to this definition">¶</a></dt>
+<dd><p>API Endpoint that allows group to be viewed or edited.</p>
+<dl class="attribute">
+<dt id="rest.core.views.GroupViewSet.serializer_class">
+<code class="descname">serializer_class</code><a class="headerlink" href="#rest.core.views.GroupViewSet.serializer_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal"><span class="pre">GroupSerializer</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="rest.core.views.SnippetDetail">
+<em class="property">class </em><code class="descclassname">rest.core.views.</code><code class="descname">SnippetDetail</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/rest/core/views.html#SnippetDetail"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rest.core.views.SnippetDetail" title="Permalink to this definition">¶</a></dt>
+<dd><p>API Endpoint that allows Snippet detail to be viewed.</p>
+<dl class="attribute">
+<dt id="rest.core.views.SnippetDetail.serializer_class">
+<code class="descname">serializer_class</code><a class="headerlink" href="#rest.core.views.SnippetDetail.serializer_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal"><span class="pre">SnippetSerializer</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="rest.core.views.SnippetFreshnessView">
+<em class="property">class </em><code class="descclassname">rest.core.views.</code><code class="descname">SnippetFreshnessView</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/rest/core/views.html#SnippetFreshnessView"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rest.core.views.SnippetFreshnessView" title="Permalink to this definition">¶</a></dt>
+<dd><p>A view that returns status of staleness of data in JSON.
+statleness of data would be measured on some logic provided
+by the business people.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="rest.core.views.SnippetList">
+<em class="property">class </em><code class="descclassname">rest.core.views.</code><code class="descname">SnippetList</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/rest/core/views.html#SnippetList"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rest.core.views.SnippetList" title="Permalink to this definition">¶</a></dt>
+<dd><p>API Endpoint that allows Snippet to be viewed.</p>
+<dl class="attribute">
+<dt id="rest.core.views.SnippetList.serializer_class">
+<code class="descname">serializer_class</code><a class="headerlink" href="#rest.core.views.SnippetList.serializer_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal"><span class="pre">SnippetSerializer</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="rest.core.views.UpdateUserName">
+<em class="property">class </em><code class="descclassname">rest.core.views.</code><code class="descname">UpdateUserName</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/rest/core/views.html#UpdateUserName"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rest.core.views.UpdateUserName" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div>This class handles the update functionality
+for updating the username of a user.
+We pass the new username as part of header.
+command to run from command prompt:</div></blockquote>
+<p>curl -X PUT -H “Content-Type: application/json” -d ‘{“username”: “Vikas”}’ <a class="reference external" href="http://127.0.0.1:8080/user/update/3">http://127.0.0.1:8080/user/update/3</a></p>
+<dl class="attribute">
+<dt id="rest.core.views.UpdateUserName.serializer_class">
+<code class="descname">serializer_class</code><a class="headerlink" href="#rest.core.views.UpdateUserName.serializer_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal"><span class="pre">UserSerializer</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="rest.core.views.UserDetail">
+<em class="property">class </em><code class="descclassname">rest.core.views.</code><code class="descname">UserDetail</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/rest/core/views.html#UserDetail"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rest.core.views.UserDetail" title="Permalink to this definition">¶</a></dt>
+<dd><p>API Endpoint that allows user detials to be viewed.</p>
+<dl class="attribute">
+<dt id="rest.core.views.UserDetail.serializer_class">
+<code class="descname">serializer_class</code><a class="headerlink" href="#rest.core.views.UserDetail.serializer_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal"><span class="pre">UserSerializer</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="rest.core.views.UserList">
+<em class="property">class </em><code class="descclassname">rest.core.views.</code><code class="descname">UserList</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/rest/core/views.html#UserList"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rest.core.views.UserList" title="Permalink to this definition">¶</a></dt>
+<dd><p>API Endpoint that allows users to be viewed.</p>
+<dl class="attribute">
+<dt id="rest.core.views.UserList.serializer_class">
+<code class="descname">serializer_class</code><a class="headerlink" href="#rest.core.views.UserList.serializer_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal"><span class="pre">UserSerializer</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="rest.core.views.UserViewSet">
+<em class="property">class </em><code class="descclassname">rest.core.views.</code><code class="descname">UserViewSet</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/rest/core/views.html#UserViewSet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rest.core.views.UserViewSet" title="Permalink to this definition">¶</a></dt>
+<dd><p>API Endpoint that allows users to be viewed or edited.</p>
+<dl class="attribute">
+<dt id="rest.core.views.UserViewSet.serializer_class">
+<code class="descname">serializer_class</code><a class="headerlink" href="#rest.core.views.UserViewSet.serializer_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal"><span class="pre">UserSerializer</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="rest.core.views.api_root">
+<code class="descclassname">rest.core.views.</code><code class="descname">api_root</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/rest/core/views.html#api_root"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rest.core.views.api_root" title="Permalink to this definition">¶</a></dt>
+<dd><p>API Endpoint with hyperlinks to user-list
+and snippet list.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="rest.core.views.days_between">
+<code class="descclassname">rest.core.views.</code><code class="descname">days_between</code><span class="sig-paren">(</span><em>d1</em>, <em>d2</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/rest/core/views.html#days_between"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rest.core.views.days_between" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accepts two dates as arguments and 
+return the difference of days between
+them.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="rest.core.views.get_auth_token">
+<code class="descclassname">rest.core.views.</code><code class="descname">get_auth_token</code><span class="sig-paren">(</span><em>request</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/rest/core/views.html#get_auth_token"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rest.core.views.get_auth_token" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the token assigned to a particular 
+user instance, by passing the username and 
+password as part of the headers.
+Sample to test.</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/modules/views.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Prateek.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="../_sources/modules/views.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
