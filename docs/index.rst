@@ -11,6 +11,7 @@ Welcome to Sample Rest's documentation!
    :caption: Contents:
 
 	modules/views.rst	
+	moduels/models.rst
 
 Indices and tables
 ==================

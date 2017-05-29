@@ -18,7 +18,7 @@ STYLE_CHOICES = sorted((item,item) for item in get_all_styles())
 # Create your models here.
 class Snippet(models.Model):
 	"""
-		This model calss represents the db schema for Snippet table.
+		This model class represents the db schema for Snippet table.
 	"""
 	created = models.DateTimeField(auto_now_add=True)
 	owner = models.ForeignKey(User, related_name='snippets', on_delete=models.CASCADE)
@@ -50,7 +50,8 @@ def create_auth_token(sender, instance=None, created=False, **kwargs):
 	"""
 		This is a signal method which recieves the signal whenever a 
 		new user is saved in the database. As soon as it gets the 
-		signal it gets executed.
+		signal it gets executed, and corresponding token for the user
+		gets created.
 	"""
 	if created:
 		Token.objects.create(user=instance)
